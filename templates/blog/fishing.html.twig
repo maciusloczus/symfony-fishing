@@ -1,0 +1,39 @@
+{# templates/blog/fishing.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Wedkarstwo{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="square-box">
+                    <!-- Placeholder for content 1 -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="square-box">
+                    <!-- Placeholder for content 2 -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="square-box">
+                    <!-- Placeholder for content 3 -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .square-box {
+            border: 2px solid lightblue;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 300px; /* Ustaw wysokość pojemników według potrzeb */
+        }
+    </style>
+{% endblock %}
