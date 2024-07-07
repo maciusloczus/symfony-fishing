@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 namespace App\Controller;
+use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use App\Services\ArticlesProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,10 +36,61 @@ class BlogController extends AbstractController
         return $this->render('blog/articles.html.twig', $data);
     }
 
-    #[Route('/wedkarstwo', name: 'fishing')]
-    public function fishingPage(): Response
+    #[Route('/wedkarstwo', name: 'wedkarstwo')]
+    public function aboutMePage(): Response
     {
         return $this->render('blog/fishing.html.twig');
+    }
+
+    #[Route('/wedkarstwo', name: 'fishing')]
+    public function fishingPage(ArticleRepository $articleRepository): Response
+    {
+        $articles = $articleRepository->findAll(); // pobierz wszystkie artykuły
+
+        return $this->render('blog/fishing.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
+    #[Route('/fishing/add', name: 'addArticle')]
+    public function addArticle(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $article = new Article();
+        $form = $this->createForm(ArticleType::class, $article);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Obsługa przesłanego formularza
+            $uploadedImage = $form->get('imageFile')->getData();
+
+            // Sprawdzenie czy obraz został przesłany
+            if ($uploadedImage) {
+                $newFilename = uniqid().'.'.$uploadedImage->guessExtension();
+
+                // Przenieś plik do katalogu, gdzie przechowujesz zdjęcia artykułów
+                try {
+                    $uploadedImage->move(
+                        $this->getParameter('articles_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Obsługa błędu przenoszenia pliku
+                }
+
+                // Zapisz ścieżkę do zdjęcia w encji artykułu
+                $article->setImagePath($newFilename);
+            }
+
+            $entityManager->persist($article);
+            $entityManager->flush();
+
+            // Przekierowanie po pomyślnym dodaniu artykułu
+            return $this->redirectToRoute('fishing');
+        }
+
+        return $this->render('blog/addArticle.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
 

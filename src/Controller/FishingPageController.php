@@ -12,9 +12,12 @@ class FishingPageController extends AbstractController
 {
     // ... istniejące metody kontrolera
 
-    #[Route('/wedkarstwo', name: 'fishing')]
-    public function fishingPage(): Response
+    #[Route('/fishing', name: 'fishing')]
+    public function index(): Response
     {
-        return $this->render('blog/fishing.html.twig');
+        return $this->render('blog/fishing.html.twig', [
+            'controller_name' => 'FishingPageController',
+
+        ]);
     }
 }

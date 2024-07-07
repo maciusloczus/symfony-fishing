@@ -63,4 +63,40 @@ class Article
 
         return $this;
     }
+
+    public function setImagePath(string $newFilename)
+    {
+    }
+
+    private ?string $imageFileName;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageFile = null;
+
+    // ...
+
+    public function getImageFileName(): ?string
+    {
+        return $this->imageFileName;
+    }
+
+    public function setImageFileName(?string $imageFileName): self
+    {
+        $this->imageFileName = $imageFileName;
+
+        return $this;
+    }
+
+    public function getImageFile(): ?string
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?string $imageFile): static
+    {
+        $this->imageFile = $imageFile;
+
+        return $this;
+    }
 }
+

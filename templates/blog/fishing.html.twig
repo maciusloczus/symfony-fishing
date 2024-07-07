@@ -5,35 +5,21 @@
 {% block title %}Wedkarstwo{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="square-box">
-                    <!-- Placeholder for content 1 -->
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="square-box">
-                    <!-- Placeholder for content 2 -->
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="square-box">
-                    <!-- Placeholder for content 3 -->
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
+    <h1>Artykuły o wedkarstwie</h1>
+    <div class="card-group">
+        {% if article is defined %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .square-box {
-            border: 2px solid lightblue;
-            padding: 20px;
-            margin-bottom: 20px;
-            height: 300px; /* Ustaw wysokość pojemników według potrzeb */
-        }
-    </style>
+        <div class="card">
+                <img src="{{ asset('uploads/articles/' ~ article.imagePath) }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.description }}</p>
+                </div>
+            </div>
+        {% else %}
+            <p>No article found.</p>
+        {% endif %}
+    </div>
+
+    <a href="{{ path('addArticle') }}" class="btn btn-primary">Dodaj nowy artykuł</a>
 {% endblock %}
