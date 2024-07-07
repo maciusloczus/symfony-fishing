@@ -57,35 +57,36 @@ class BlogController extends AbstractController
     {
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
-
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Obsługa przesłanego formularza
-            $uploadedImage = $form->get('imageFile')->getData();
 
-            // Sprawdzenie czy obraz został przesłany
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Przetwarzanie i zapis obrazu
+            $uploadedImage = $form->get('imageFile')->getData();
             if ($uploadedImage) {
                 $newFilename = uniqid().'.'.$uploadedImage->guessExtension();
 
-                // Przenieś plik do katalogu, gdzie przechowujesz zdjęcia artykułów
                 try {
                     $uploadedImage->move(
                         $this->getParameter('articles_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // Obsługa błędu przenoszenia pliku
+                    // Obsługa błędu związana z przesyłaniem pliku
                 }
 
-                // Zapisz ścieżkę do zdjęcia w encji artykułu
+                // Ustawienie ścieżki obrazu w encji Article
                 $article->setImagePath($newFilename);
             }
 
+            // Inne ustawienia encji Article
+            $article->setCreated(new \DateTime()); // Przykładowe ustawienie daty utworzenia
+//            $article->setAuthor($this->getUser()); // Przykładowe ustawienie autora
+
+            // Persist and flush the article entity
             $entityManager->persist($article);
             $entityManager->flush();
 
-            // Przekierowanie po pomyślnym dodaniu artykułu
-            return $this->redirectToRoute('fishing');
+            return $this->redirectToRoute('article', ['id' => $article->getId()]);
         }
 
         return $this->render('blog/addArticle.html.twig', [

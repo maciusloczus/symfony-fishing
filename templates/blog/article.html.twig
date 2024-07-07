@@ -14,7 +14,7 @@
                 {{ article.content }}
             </p>
             {% if article.imageFile %}
-                <img src="{{ asset('images_directory/' ~ article.imageFile) }}" alt="Article Image">
+                <img src="{{ asset('uploads/articles' ~ article.imageFile) }}" alt="Article Image">
             {% endif %}
         </div>
     </div>
